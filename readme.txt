@@ -25,3 +25,7 @@ mysqldump -u root -p --databases library_db > "C:\dev\IT30A\backups\%date:~4%_%d
 %time:~3,2%_
 %time:~6,2%_
 library_db.sql"
+
+Laboratory 2
+
+ALTER TABLE students ADD COLUMN student_created_at TIMESTAMP NULL DEFAULT NULL;
