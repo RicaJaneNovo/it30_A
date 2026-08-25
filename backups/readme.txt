@@ -16,6 +16,8 @@ Utility Commands
 mysqldump -u root -p --database library_db > C:\dev\IT30A\backups\08182026_library.sql
 
 mysqldump -u root -p --databases library_db > "C:\dev\IT30A\backups\%date:~4%_%date:~4,2%_%date:~7,2%_%time:~0,2%_%time:~3,2%_%time:~6,2%_libray.sql"
+mysqldump -u root -p --databases library_db > "C:\dev\IT30A\backups\library_%date:~10,4%-%date:~4,2%-%date:~7,2%_%time:~0,2%-%time:~3,2%-%time:~6,2%.sql"
+
 
 
 %date:~-4%_
