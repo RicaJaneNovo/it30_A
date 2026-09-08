@@ -1,84 +1,121 @@
-/* Table #1: Students table */
+/* =========================================================
+   TABLE #1: Students
+   ========================================================= */
+
 CREATE TABLE IF NOT EXISTS students (
     student_id INT AUTO_INCREMENT PRIMARY KEY,
+
     student_first_name VARCHAR(50) NOT NULL,
     student_last_name VARCHAR(50) NOT NULL,
     student_course VARCHAR(50) NOT NULL,
-    student_current_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+
+    student_created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+
 ) ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_general_ci;
 
---Table #2 books
-CREATE TABLE IF NOT EXISTS books(
-    --Primary key for books table
 
+/* =========================================================
+   TABLE #2: Books
+   ========================================================= */
+
+CREATE TABLE IF NOT EXISTS books (
+    -- Primary key
     book_id INT AUTO_INCREMENT PRIMARY KEY,
-    
-    --Book Details
-    book_title VARCHAR(50) NOT NULL,
-    book_author VARCHAR(50) NOT NULL,
+
+    -- Book details
+    book_title VARCHAR(100) NOT NULL,
+    book_author VARCHAR(100) NOT NULL,
     book_category VARCHAR(50) NOT NULL,
 
-    --Book created at timestamp
+    -- Book created timestamp
     book_created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+
 ) ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_general_ci;
 
 
---Table #3 borrow 
-CREATE TABLE IF NOT EXISTS borrows(
-    --Primary key for borrow table
+/* =========================================================
+   TABLE #3: Borrows
+   ========================================================= */
+
+CREATE TABLE IF NOT EXISTS borrows (
+    -- Primary key
     borrow_id INT AUTO_INCREMENT PRIMARY KEY,
 
-    --Foreign key references
+    -- Foreign keys
     student_id INT NOT NULL,
     book_id INT NOT NULL,
 
-    --Borrow timestamp not null by default
-    borrow_date TIMESTAMP NOT NULL,
-    DEFAULT CURRENT_TIMESTAMP,
+    -- Borrow timestamp
+    borrow_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    --Borrow return timestamp null by default
+    -- Return timestamp
+    -- NULL means the book has not been returned yet
+    borrow_return_date TIMESTAMP NULL DEFAULT NULL,
 
-    borrow_return_date TIMESTAMP NOT NULL
-    DEFAULT NULL,
-
-    --Borrow table constraints and foreign keys
+    -- Student foreign key
     CONSTRAINT fk_borrow_student
-    FOREIGN KEY (student_id)
-    REFERENCES students(student_id)
-    ON UPDATE CASCADE
-    ON DELETE RESTRICT,
+        FOREIGN KEY (student_id)
+        REFERENCES students(student_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
 
+    -- Book foreign key
     CONSTRAINT fk_borrow_book
-    FOREIGN KEY (book_id)
-    REFERENCES books(book_id)
-    ON UPDATE CASCADE
-    ON DELETE RESTRICT
+        FOREIGN KEY (book_id)
+        REFERENCES books(book_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
 
-
-)ENGINE=InnoDB
+) ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_general_ci;
 
---Insert statement #1: Insert Students
 
-INSERT INTO students (student_first_name,student_last_name,student_course) 
-VALUES ('Rica Jane','Novo','BSIT'),
-('XAVIER','ALIEN','BS-HUNTER',),
-('ZAYNE','SNOWMAN','MEDICAL/Cardiologist',),
-('RAFAYEL','FIRE','ARTIST',);
+/* =========================================================
+   INSERT #1: Students
+   ========================================================= */
 
---Insert statement #2: Insert Books
+INSERT INTO students (
+    student_first_name,
+    student_last_name,
+    student_course
+)
+VALUES
+    ('Rica Jane', 'Novo', 'BSIT'),
+    ('Xavier', 'Alien', 'BS-HUNTER'),
+    ('Zayne', 'Snowman', 'MEDICAL/Cardiologist'),
+    ('Rafayel', 'Fire', 'ARTIST');
 
-INSERT INTO books (book_title,book_author,book_category) 
-VALUES ("Project Hail Mary", 
-"Andy Weir", "Science Fiction"), 
-("Hell University", "Kuya Kib", "Mystery"), 
-("He's Into Her", "None so far", "romance");
 
---Insert statement #3: Insert borrows
-INSERT INTO borrows (student_id,book_id)
- VALUES (1,2), (2,1), (3,3);
+/* =========================================================
+   INSERT #2: Books
+   ========================================================= */
+
+INSERT INTO books (
+    book_title,
+    book_author,
+    book_category
+)
+VALUES
+    ('Project Hail Mary', 'Andy Weir', 'Science Fiction'),
+    ('Hell University', 'Kuya Kib', 'Mystery'),
+    ('He''s Into Her', 'None so far', 'Romance');
+
+
+
+ /* =========================================================
+   INSERT #3: Borrows
+   ========================================================= */
+
+INSERT INTO borrows (
+    student_id,
+    book_id
+)
+VALUES
+    (1, 2),
+    (2, 1),
+    (3, 3);
