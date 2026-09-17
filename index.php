@@ -6,10 +6,10 @@ $user = 'root';
 $pass = '';
 $charset = 'utf8mb4';
 
-$dsn = "mysql:host=$host; dnmae=$db; charset=$charset";
+$dsn = "mysql:host=$host;dbname=$db";
 
-$option = [
-    PDO::ATTR_ERRMODE =>PDO::ERMODE_EXCEPTION,
+$options = [
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     PDO:: ATTR_DEFAULT_FETCH_MODE =>PDO::FETCH_ASSOC,
     PDO:: ATTR_EMULATE_PREPARES =>false,
 ];
@@ -43,6 +43,7 @@ if($section === 'students') {
     FROM students
     ORDER by student_id DESC
     ");
+    $students = $stmt->fetchAll();
 }
 ?>
 
@@ -73,17 +74,43 @@ if($section === 'students') {
                     <th>Created At</th>
                     <th>Actions</th>
         </tr>
-        </thead>
-        <tbody>
-            <?php foreach($students as $student): ?>
-                
+        <tbody> 
+            <?php foreach($students as $student): ?> 
+                <tr> 
+                    <td> 
+                        <?= htmlspecialchars($student['student_id']) ?> 
+            </td> 
+                     <td> 
+                        <?= htmlspecialchars($student['student_first_name']) ?> 
+            </td> 
+                     <td> 
+                        <?= htmlspecialchars($student['student_last_name']) ?> 
+            </td> 
+                     <td> 
+                        <?= htmlspecialchars($student['student_course']) ?> 
+            </td> 
+                     <td> 
+                        <?= htmlspecialchars($student['student_created_at']) ?> 
+            </td> 
+            <td> 
+                <a>Edit</a> 
+ 
+                <a>Delete</a> 
+            </td> 
+            </tr> 
+            <?php endforeach; ?>
+            </tbody> 
+            </table> 
+<?php endif; ?> 
+
 
         <?php if ($section === 'books') : ?>
             <h1>Books</h1>
         <?php endif; ?>
 
-        <?php if ($section === 'borrows') : ?>
-            <h1>Borrows</h1>
-        <?php endif; ?>
+        <?php if ($section === 'borrow') : ?> 
+    <h1>Borrows</h1> 
+<?php endif; ?>
+
 </body>
 </html>
