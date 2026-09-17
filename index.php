@@ -64,7 +64,7 @@ if($section === 'students') {
         <hr>
         <?php if ($section === 'students') : ?>
             <h1>Students</h1>
-        <table>
+        <table border ="1">
             <thead>
                 <tr>
                     <th>ID</th>
