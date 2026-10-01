@@ -265,6 +265,20 @@ $stmt = $pdo->query("
 
 $books = $stmt->fetchAll();
 
+    // Fetch Borrow Records
+    $stmt = $pdo->query("
+        SELECT
+            borrow_id,
+            student_id,
+            book_id,
+            borrow_date,
+            borrow_return_date
+        FROM borrows
+        ORDER BY borrow_id DESC
+    ");
+
+    $borrows = $stmt->fetchAll();
+
 }
 
 
@@ -341,6 +355,29 @@ if($section === 'borrows' && $action === 'create') {
             header("Location: index.php?section=borrows");
             exit;
         }
+    }
+}
+
+// Return A Book
+if($section === 'borrows' && $action === 'update') {
+
+    $borrowId = (int)($_GET['id'] ?? 0);
+
+    if($borrowId > 0) {
+
+        $stmt = $pdo->prepare("
+            UPDATE borrows
+            SET borrow_return_date = NOW()
+            WHERE borrow_id = ?
+            AND borrow_return_date IS NULL
+        ");
+
+        $stmt->execute([$borrowId]);
+
+        $_SESSION['alert'] = 'Book returned successfully';
+
+        header("Location: index.php?section=borrows");
+        exit;
     }
 }
 
@@ -652,6 +689,8 @@ if($section === 'borrows' && $action === 'create') {
             <?php endif; ?>
 
 
+
+
         <?php if ($section === 'borrows') : ?> 
             <h1>Borrows</h1> 
 
@@ -663,7 +702,7 @@ if($section === 'borrows' && $action === 'create') {
 
    <?php if($action === 'create'): ?>
 
-    <h3>Add New Borrow Book</h3>
+    <h3>Borrow A Book</h3>
 
     <form method="POST">
 
@@ -729,6 +768,80 @@ if($section === 'borrows' && $action === 'create') {
 
     </form>
 
+     <?php else: ?>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Borrow Id</th>
+            <th>Student Id</th>
+            <th>Book Id</th>
+            <th>Borrow Date</th>
+            <th>Book Return Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <?php foreach($borrows as $borrow): ?>
+
+            <tr>
+
+                <td>
+                    <?= htmlspecialchars($borrow['borrow_id']) ?>
+                </td>
+
+                <td>
+                    <?= htmlspecialchars($borrow['student_id']) ?>
+                </td>
+
+                <td>
+                    <?= htmlspecialchars($borrow['book_id']) ?>
+                </td>
+
+                <td>
+                    <?= htmlspecialchars($borrow['borrow_date']) ?>
+                </td>
+
+                <td>
+                    <?php if($borrow['borrow_return_date'] === null): ?>
+
+                        Not Returned
+
+                    <?php else: ?>
+
+                        <?= htmlspecialchars($borrow['borrow_return_date']) ?>
+
+                    <?php endif; ?>
+                </td>
+
+                <td>
+
+                    <?php if($borrow['borrow_return_date'] === null): ?>
+
+                        <a href="index.php?section=borrows&action=update&id=<?= $borrow['borrow_id'] ?>">
+                            Return Book
+                        </a>
+
+                    <?php else: ?>
+
+                        Returned
+
+                    <?php endif; ?>
+
+                </td>
+
+            </tr>
+
+        <?php endforeach; ?>
+
+    </tbody>
+
+</table>
+
+<?php endif; ?>
+
 <?php endif; ?>
 
 <?php if (isset ($_SESSION['alert'])): ?>
@@ -739,7 +852,6 @@ if($section === 'borrows' && $action === 'create') {
 
             <?php unset($_SESSION['alert']); ?>
 
-<?php endif; ?>
 <?php endif; ?>
 
 
