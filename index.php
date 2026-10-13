@@ -265,16 +265,19 @@ $stmt = $pdo->query("
 
 $books = $stmt->fetchAll();
 
-    // Fetch Borrow Records
+    // Fetch Borrow Records with Student and Book Names
     $stmt = $pdo->query("
         SELECT
-            borrow_id,
-            student_id,
-            book_id,
-            borrow_date,
-            borrow_return_date
+            borrows.borrow_id,
+            students.student_first_name,
+            students.student_last_name,
+            books.book_title,
+            borrows.borrow_date,
+            borrows.borrow_return_date
         FROM borrows
-        ORDER BY borrow_id DESC
+        INNER JOIN students ON borrows.student_id = students.student_id
+        INNER JOIN books ON borrows.book_id = books.book_id
+        ORDER BY borrows.borrow_id DESC
     ");
 
     $borrows = $stmt->fetchAll();
@@ -773,71 +776,50 @@ if($section === 'borrows' && $action === 'update') {
 <table border="1">
     <thead>
         <tr>
-            <th>Borrow Id</th>
-            <th>Student Id</th>
-            <th>Book Id</th>
+            <th>Borrow ID</th>
+            <th>Student Name</th>
+            <th>Book Name</th>
             <th>Borrow Date</th>
             <th>Book Return Date</th>
+            <th>Status</th>
             <th>Actions</th>
         </tr>
     </thead>
 
     <tbody>
-
-        <?php foreach($borrows as $borrow): ?>
-
+        <?php foreach ($borrows as $borrow): ?>
             <tr>
-
+                <td><?= htmlspecialchars($borrow['borrow_id']) ?></td>
+                <td><?= htmlspecialchars($borrow['student_first_name'] . ' ' . $borrow['student_last_name']) ?></td>
+                <td><?= htmlspecialchars($borrow['book_title']) ?></td>
+                <td><?= htmlspecialchars($borrow['borrow_date']) ?></td>
                 <td>
-                    <?= htmlspecialchars($borrow['borrow_id']) ?>
-                </td>
-
-                <td>
-                    <?= htmlspecialchars($borrow['student_id']) ?>
-                </td>
-
-                <td>
-                    <?= htmlspecialchars($borrow['book_id']) ?>
-                </td>
-
-                <td>
-                    <?= htmlspecialchars($borrow['borrow_date']) ?>
-                </td>
-
-                <td>
-                    <?php if($borrow['borrow_return_date'] === null): ?>
-
+                    <?php if ($borrow['borrow_return_date'] === null): ?>
                         Not Returned
-
                     <?php else: ?>
-
                         <?= htmlspecialchars($borrow['borrow_return_date']) ?>
-
                     <?php endif; ?>
                 </td>
-
                 <td>
-
-                    <?php if($borrow['borrow_return_date'] === null): ?>
-
-                        <a href="index.php?section=borrows&action=update&id=<?= $borrow['borrow_id'] ?>">
-                            Return Book
-                        </a>
-
+                    <?php if ($borrow['borrow_return_date'] === null): ?>
+                        Borrowed
                     <?php else: ?>
-
                         Returned
-
                     <?php endif; ?>
-
                 </td>
-
+                <td>
+                    <?php if ($borrow['borrow_return_date'] === null): ?>
+                        <a
+                            href="index.php?section=borrows&action=update&id=<?= (int) $borrow['borrow_id'] ?>"
+                            onclick="return confirm('Mark this book as returned?');"
+                        >Return Book</a>
+                    <?php else: ?>
+                        Already Returned
+                    <?php endif; ?>
+                </td>
             </tr>
-
         <?php endforeach; ?>
-
     </tbody>
-
 </table>
 
 <?php endif; ?>
