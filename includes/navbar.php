@@ -15,10 +15,13 @@ function navActive($section,$currentSection){
         display:flex;
         justify-content: space-between;
         align-items: center;
+        width: 100%;
+        box-sizing: border-box;
         margin-bottom: 2rem;
         flex-wrap: wrap;
-        gap:1rem;
+        gap: 1rem;
         font-family: Roboto,system-ui,-apple-system, sans-serif;
+
     }
 
     .app-header h1{
@@ -38,8 +41,9 @@ function navActive($section,$currentSection){
 
     .nav-links{
         display:flex;
-        gap:0.25rem;
+        gap:1.5rem;
         background: transparent;
+        margin-left:auto;
     }
 
     .nav-links a{
@@ -106,7 +110,7 @@ function navActive($section,$currentSection){
 
     <nav class="nav-links">
 
-        <a href="index.php?section=dashboard" class="<?=  navActive('dashboard',$currentSection) ?>">
+        <a href="dashboard.php" class="<?= navActive('dashboard', $currentSection) ?>">
             <span class="material-icons">dashboard</span>
             Dashboard
         </a>

@@ -255,27 +255,23 @@ if($section === 'borrow'){
     $books = $stmt->fetchAll();
 
     $stmt = $pdo->query("
-        SELECT
-            borrow.borrow_id,
-            borrow.borrow_date,
-            borrow.borrow_return_date,
+       SELECT
+    borrows.borrow_id,
+    borrows.borrow_date,
+    borrows.borrow_return_date,
+    students.student_first_name,
+    students.student_last_name,
+    books.book_title,
+    books.book_author
+FROM borrows
 
-            students.student_first_name,
-            students.student_last_name,
+INNER JOIN students
+    ON borrows.student_id = students.student_id
 
-            books.book_title,
-            books.book_author
+INNER JOIN books
+    ON borrows.book_id = books.book_id
 
-        FROM borrow
-
-        INNER JOIN students
-            ON borrow.student_id = students.student_id
-
-        INNER JOIN books
-            ON borrow.book_id = books.book_id
-
-        ORDER BY borrow.borrow_id DESC
-    ");
+ORDER BY borrows.borrow_id DESC");
 
     $borrowRecords = $stmt->fetchAll();
 }
@@ -372,16 +368,13 @@ if($section==='borrow' && $action==='return'){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Library System</title>
-</head>
-<body>
-    <h1>Simple Library System</h1>
-    <nav>
-        <a href="index.php?section=students">Students</a>
-        <a href="index.php?section=books">Books</a>
-        <a href="index.php?section=borrow">Borrow</a>
-    </nav>
-    <hr>
+   <h1>Simple Library System</h1>
+<nav>
+    <a href="index.php?section=students">Students</a>
+    <a href="index.php?section=books">Books</a>
+    <a href="index.php?section=borrow">Borrow</a>
+</nav>
+<hr>
     <?php if($section==='students'): ?>
         <h1>Students</h1>
         <p>
@@ -475,7 +468,7 @@ if($section==='borrow' && $action==='return'){
 
         <?php else: ?>
 
-            <table>
+            <table border="1" cellpadding="8" cellspacing="0">
                 <thead>
                     <tr>
                         <th>ID</th>
