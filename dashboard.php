@@ -1,5 +1,29 @@
 <?php 
+$host = 'localhost';
+$db   = 'it30a_lab_db';
+$user = 'root';
+$pass = '';
+$charset = 'utf8mb4';
 
+$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+
+$options = [
+    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES   => false,
+];
+
+try {
+    $pdo = new PDO($dsn, $user, $pass, $options);
+} catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
+}
+
+// ---------- 1. KPI COUNTS ----------
+$studentCount  = $pdo->query("SELECT COUNT(*) FROM students")->fetchColumn();
+$bookCount     = $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
+$totalBorrows  = $pdo->query("SELECT COUNT(*) FROM borrows")->fetchColumn();
+$activeBorrows = $pdo->query("SELECT COUNT(*) FROM borrows WHERE borrow_return_date IS NULL")->fetchColumn();
 ?>
 
 <!DOCTYPE html>
@@ -244,7 +268,47 @@
 </head>
 <body>
 
-    <?php include 'includes/navbar.php'; ?>
+    <div class="dashboard">
+        <?php include 'includes/navbar.php'; ?>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Students</span>
+                    <span class="material-icons">school</span>
+                </div>
+                <div class="stat-number"><?= $studentCount ?></div>
+                <div class="stat-sub">enrolled</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Books</span>
+                    <span class="material-icons">auto_stories</span>
+                </div>
+                <div class="stat-number"><?= $bookCount ?></div>
+                <div class="stat-sub">in collection</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Borrow records</span>
+                    <span class="material-icons">history</span>
+                </div>
+                <div class="stat-number"><?= $totalBorrows ?></div>
+                <div class="stat-sub">all time</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Active loans</span>
+                    <span class="material-icons">pending_actions</span>
+                </div>
+                <div class="stat-number"><?= $activeBorrows ?></div>
+                <div class="stat-sub">not returned</div>
+            </div>
+        </div>
+    </div>
     
 </body>
 </html>
