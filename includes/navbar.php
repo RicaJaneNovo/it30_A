@@ -125,7 +125,7 @@ function navActive($section,$currentSection){
             Books
         </a>
 
-        <a href="index.php?section=borrow" class="<?=  navActive('borrow',$currentSection) ?>">
+        <a href="index.php?section=borrows" class="<?=  navActive('borrow',$currentSection) ?>">
             <span class="material-icons">swap_horiz</span>
             Borrow
         </a>

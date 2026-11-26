@@ -289,7 +289,7 @@ if($section==='borrow' && $action==="create"){
             // Check if student has an unreturned book
             $stmt = $pdo->prepare("
                 SELECT borrow_id
-                FROM borrow
+                FROM borrows
                 WHERE  student_id=?
                     AND borrow_return_date is NULL
                 LIMIT 1
@@ -305,7 +305,7 @@ if($section==='borrow' && $action==="create"){
                 // Check if book is already returned
                 $stmt = $pdo->prepare("
                     SELECT borrow_id
-                    FROM borrow
+                    FROM borrows
                     WHERE book_id=?
                         AND borrow_return_date is NULL
                     LIMIT 1
@@ -320,7 +320,7 @@ if($section==='borrow' && $action==="create"){
 
                     // Create borrow record finally hehehehe
                     $stmt = $pdo->prepare("
-                        INSERT INTO borrow(
+                        INSERT INTO borrows(
                             student_id,
                             book_id
                         )
@@ -349,7 +349,7 @@ if($section==='borrow' && $action==='return'){
     $borrowId = (int) ($_GET['id'] ?? 0);
 
     $stmt = $pdo->prepare("
-        UPDATE borrow
+        UPDATE borrows
         SET borrow_return_date = CURRENT_TIMESTAMP
         WHERE borrow_id=?
     ");
@@ -372,7 +372,7 @@ if($section==='borrow' && $action==='return'){
 <nav>
     <a href="index.php?section=students">Students</a>
     <a href="index.php?section=books">Books</a>
-    <a href="index.php?section=borrow">Borrow</a>
+    <a href="index.php?section=borrow">Borrows</a>
 </nav>
 <hr>
     <?php if($section==='students'): ?>
